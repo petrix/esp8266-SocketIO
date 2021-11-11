@@ -1,1 +1,1 @@
-static const char* WIFI_PASSWORD = "wifipassword";
+static const char *WIFI_PASSWORD = "XRON2XRON2";

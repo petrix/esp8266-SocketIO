@@ -6,44 +6,39 @@
 
 #define USER_SERIAL Serial
 
+const char *ssid = "XRON2N";
+const char *pass = WIFI_PASSWORD;
 
-const char* ssid = "Picky_ASUS_00_2G";
-const char* pass = WIFI_PASSWORD;
-
-int R = D1;
-int G = D2;
-int B = D3;
-
-
-
+int R = 4;
+int G = 5;
+int B = 6;
 
 SocketIoClient webSocket;
 
-
-void setup() {
+void setup()
+{
 
   pinMode(R, OUTPUT);
   pinMode(G, OUTPUT);
   pinMode(B, OUTPUT);
 
-
   USER_SERIAL.begin(115200);
 
   searchWiFi();
   connectWiFi();
-  
-  webSocket.begin("192.168.2.66", 5000);
+
+  webSocket.begin("192.168.0.66", 5000);
   webSocket.on("message", controlled);
 }
 
-void loop() {
+void loop()
+{
   webSocket.loop();
-
 }
 
-void controlled(const char* message, size_t length){
-//  USER_SERIAL.println(message);
-
+void controlled(const char *message, size_t length)
+{
+  //  USER_SERIAL.println(message);
 
   DynamicJsonDocument doc(1024);
   deserializeJson(doc, message);
@@ -52,21 +47,18 @@ void controlled(const char* message, size_t length){
   double g = doc["g"];
   double b = doc["b"];
 
-
   analogWrite(R, (r * 255));
   analogWrite(G, (g * 255));
   analogWrite(B, (b * 255));
-  
 }
 
-
-
-
-void searchWiFi(){
+void searchWiFi()
+{
   int numberOfNetwork = WiFi.scanNetworks();
   USER_SERIAL.println("----");
-  
-  for(int i = 0; i < numberOfNetwork; i++ ){
+
+  for (int i = 0; i < numberOfNetwork; i++)
+  {
     USER_SERIAL.print("Network name: ");
     USER_SERIAL.println(WiFi.SSID(i));
     USER_SERIAL.print("Signal strength: ");
@@ -75,10 +67,11 @@ void searchWiFi(){
   }
 }
 
-
-void connectWiFi(){
+void connectWiFi()
+{
   WiFi.begin(ssid, pass);
-  while(WiFi.status() != WL_CONNECTED){
+  while (WiFi.status() != WL_CONNECTED)
+  {
     USER_SERIAL.print(".");
     delay(1000);
   }
@@ -87,5 +80,4 @@ void connectWiFi(){
   USER_SERIAL.println("WiFi connected");
   USER_SERIAL.print("IP Address : ");
   USER_SERIAL.println(WiFi.localIP());
-  
 }
